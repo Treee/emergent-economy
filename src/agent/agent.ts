@@ -33,13 +33,12 @@ export class Agent {
     market: Market;
 
     maxCommodity = 1000;
+    excessThreshhold = 750;
 
     constructor(market: Market) {
         this.market = market;
         this.priceBeliefs.set(CommodityType.TEST, new PriceRange(0, 42));
     }
-
-    // return Math.min(Math.max(this, min), max);
 
     determineAmountToBuy(commodityType: CommodityType): number {
         const currentQuantity = this.inventory.get(commodityType) || 0;
@@ -50,13 +49,9 @@ export class Agent {
 
     getMarketFavorabilityOf(commodityType: CommodityType): number {
         const commodityPriceRange = this.getPriceRangeOf(commodityType);
-        const currentValue = this.getHistoricalMeanPriceOf(commodityType);
+        const currentValue = this.market.getHistoricalMeanPriceOf(commodityType); (commodityType);
         const favorability = (currentValue - commodityPriceRange.minimum) / (commodityPriceRange.maximum - commodityPriceRange.minimum);
         return favorability;
-    }
-
-    getHistoricalMeanPriceOf(commodityType: CommodityType): number {
-        return this.market.getCommodity(commodityType).getHistoricalMean();
     }
 
     getPriceRangeOf(commodityType: CommodityType): PriceRange {

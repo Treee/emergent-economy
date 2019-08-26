@@ -19,4 +19,8 @@ export class Market {
         return commodity;
     }
 
+    getHistoricalMeanPriceOf(commodityType: CommodityType): number {
+        return this.getCommodity(commodityType).getHistoricalMean();
+    }
+
 }

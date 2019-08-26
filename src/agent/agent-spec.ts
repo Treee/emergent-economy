@@ -73,14 +73,6 @@ describe('Agent', () => {
         expect(agent.market).toBeDefined();
     });
 
-    it('has an upper and lower bound for its price beliefs', () => {
-
-    });
-
-    it('selects a uniformly random value from its price belief', () => {
-
-    });
-
     it('the outcome of a trade positivly or negatively reinforces price beliefs', () => {
 
     });
@@ -105,10 +97,6 @@ describe('Agent', () => {
 
     });
 
-    it('determines quantities of commodoties to trade', () => {
-
-    });
-
     it('creates a bid for a commodity with a limit to buy', () => {
 
     });
@@ -126,11 +114,6 @@ describe('Agent', () => {
     });
 
     describe('Determine Purchase Quantity', () => {
-        it('can find the historical mean price of a commodity', () => {
-            const expectedHistoricalMeanPrice = 30;
-            const actualHistoricalMeanPrice = agent.getHistoricalMeanPriceOf(testCommodityType);
-            expect(actualHistoricalMeanPrice).toEqual(expectedHistoricalMeanPrice);
-        });
 
         it('determines favorability of conditions for purchasing', () => {
             const expectedFavorability = 0.7142857142857143;

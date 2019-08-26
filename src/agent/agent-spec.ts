@@ -41,7 +41,7 @@
 import { Agent, PriceRange } from './agent';
 import { CommodityType } from '../commodity/commodity-types';
 import { Commodity } from '../commodity/commodity';
-import { Market } from '../market/market';
+import { Market, Transaction } from '../market/market';
 
 describe('Agent', () => {
     let testMarket: Market;
@@ -60,7 +60,7 @@ describe('Agent', () => {
         testCommodity.makeTrade(30);
         testCommodity.makeTrade(40);
         testCommodity.makeTrade(50);
-        agent = new Agent(testMarket);
+        agent = new Agent(testMarket, 'testAgent');
     });
 
     describe('Price Beliefs', () => {
@@ -71,6 +71,13 @@ describe('Agent', () => {
 
     it('has a knowledge of the market', () => {
         expect(agent.market).toBeDefined();
+    });
+
+
+    it('determines a price to pay via a uniformly random distribution', () => {
+        const actualAskingPrice = agent.getPriceOf(testCommodityType);
+        expect(actualAskingPrice).toBeGreaterThan(testPriceRange.minimum - 1);
+        expect(actualAskingPrice).toBeLessThan(testPriceRange.maximum + 1);
     });
 
     it('the outcome of a trade positivly or negatively reinforces price beliefs', () => {
@@ -97,22 +104,22 @@ describe('Agent', () => {
 
     });
 
-    it('creates a bid for a commodity with a limit to buy', () => {
-
+    it('creates a bid for a commodity', () => {
+        const expectedBid = new Transaction(testCommodityType, 35, 714, agent.agentId, 0);
+        const actualBid = agent.createBid(testCommodityType);
+        delete actualBid.bidPrice;
+        delete expectedBid.bidPrice;
+        expect(actualBid).toEqual(expectedBid);
     });
 
-    describe('Create Bid To Buy', () => {
-        it('determines a price to pay', () => {
-            const actualAskingPrice = agent.getPriceOf(testCommodityType);
-            expect(actualAskingPrice).toBeGreaterThan(testPriceRange.minimum - 1);
-            expect(actualAskingPrice).toBeLessThan(testPriceRange.maximum + 1);
-        });
-
-        it('determines the ideal amount of something to buy', () => {
-
-        });
+    it('creates an ask for a commodity', () => {
+        agent.inventory.set(testCommodityType, 1000);
+        const expectedAsk = new Transaction(testCommodityType, 35, 179, agent.agentId, 0);
+        const actualAsk = agent.createAsk(testCommodityType);
+        delete actualAsk.bidPrice;
+        delete expectedAsk.bidPrice;
+        expect(actualAsk).toEqual(expectedAsk);
     });
-
 
     it('determines favorability of conditions for purchasing', () => {
         const expectedFavorability = 0.7142857142857143;
@@ -138,22 +145,5 @@ describe('Agent', () => {
         const actualSellAmount = agent.determineAmountToSell(testCommodityType);
         expect(actualSellAmount).toEqual(expectedSellAmount);
     });
-
-    describe('Create Ask To Sell', () => {
-
-        it('when agent needs money', () => {
-
-        });
-
-        it('when there is a surplus of inventory', () => {
-
-        });
-
-        it('when there are favorable market conditions', () => {
-
-        });
-    });
-
-
 
 });

@@ -1,5 +1,5 @@
 import { CommodityType } from "../commodity/commodity-types";
-import { Market } from "../market/market";
+import { Market, Transaction } from "../market/market";
 
 export class PriceRange {
     minimum: number;
@@ -15,16 +15,6 @@ export class PriceRange {
     }
 }
 
-export class Bid {
-    quantity: number;
-    commodityType: CommodityType;
-
-    constructor(quantity: number, commodityType: CommodityType) {
-        this.quantity = quantity;
-        this.commodityType = commodityType;
-    }
-}
-
 export class Agent {
 
     priceBeliefs = new Map<CommodityType, PriceRange>();
@@ -35,9 +25,28 @@ export class Agent {
     maxCommodity = 1000;
     excessThreshhold = 750;
 
-    constructor(market: Market) {
+    bidCount = 0;
+    askCount = 0;
+    agentId: string;
+
+    constructor(market: Market, agentId: string) {
         this.market = market;
+        this.agentId = agentId;
         this.priceBeliefs.set(CommodityType.TEST, new PriceRange(0, 42));
+    }
+
+    createBid(commodityType: CommodityType): Transaction {
+        const bidPrice = this.getPriceOf(commodityType);
+        const amountToPurchase = this.determineAmountToBuy(commodityType);
+        const transaction = new Transaction(commodityType, bidPrice, amountToPurchase, this.agentId, this.bidCount++);
+        return transaction;
+    }
+
+    createAsk(commodityType: CommodityType): Transaction {
+        const askPrice = this.getPriceOf(commodityType);
+        const amountToSell = this.determineAmountToSell(commodityType);
+        const transaction = new Transaction(commodityType, askPrice, amountToSell, this.agentId, this.askCount++);
+        return transaction;
     }
 
     determineAmountToSell(commodityType: CommodityType): number {

@@ -113,23 +113,30 @@ describe('Agent', () => {
         });
     });
 
-    describe('Determine Purchase Quantity', () => {
 
-        it('determines favorability of conditions for purchasing', () => {
-            const expectedFavorability = 0.7142857142857143;
-            const actualFavorability = agent.getMarketFavorabilityOf(testCommodityType);
-            expect(actualFavorability).toEqual(expectedFavorability);
-        });
-
-        it('determines the amount of commodity to purchase', () => {
-            const expectedBuyAmount = 714;
-            const actualBuyAmount = agent.determineAmountToBuy(testCommodityType);
-            expect(actualBuyAmount).toEqual(expectedBuyAmount);
-        });
+    it('determines favorability of conditions for purchasing', () => {
+        const expectedFavorability = 0.7142857142857143;
+        const actualFavorability = agent.getMarketFavorabilityOf(testCommodityType);
+        expect(actualFavorability).toEqual(expectedFavorability);
     });
 
-    describe('Determine Sale Quantity', () => {
+    it('determines the amount of commodity to purchase', () => {
+        const expectedBuyAmount = 714;
+        const actualBuyAmount = agent.determineAmountToBuy(testCommodityType);
+        expect(actualBuyAmount).toEqual(expectedBuyAmount);
+    });
 
+    it('determines the amount of commodity to sell', () => {
+        const expectedSellAmount = 0;
+        const actualSellAmount = agent.determineAmountToSell(testCommodityType);
+        expect(actualSellAmount).toEqual(expectedSellAmount);
+    });
+
+    it('determines the amount of commodity to sell when there is excess', () => {
+        agent.inventory.set(testCommodityType, 1000);
+        const expectedSellAmount = 179;
+        const actualSellAmount = agent.determineAmountToSell(testCommodityType);
+        expect(actualSellAmount).toEqual(expectedSellAmount);
     });
 
     describe('Create Ask To Sell', () => {

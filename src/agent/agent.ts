@@ -40,6 +40,14 @@ export class Agent {
         this.priceBeliefs.set(CommodityType.TEST, new PriceRange(0, 42));
     }
 
+    determineAmountToSell(commodityType: CommodityType): number {
+        const currentQuantity = this.inventory.get(commodityType) || 0;
+        const excessCommodity = Math.max(currentQuantity - this.excessThreshhold, 0);
+        const marketFavorability = this.getMarketFavorabilityOf(commodityType);
+        // console.log(`current: ${currentQuantity}, excess: ${excessCommodity}, favor: ${marketFavorability * 100}%, suggest: ${Math.round(marketFavorability * excessCommodity)}`);
+        return Math.round(marketFavorability * excessCommodity);
+    }
+
     determineAmountToBuy(commodityType: CommodityType): number {
         const currentQuantity = this.inventory.get(commodityType) || 0;
         const availableInventorySpace = Math.max(this.maxCommodity - currentQuantity, this.maxCommodity);

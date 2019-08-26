@@ -40,15 +40,25 @@
 
 import { Agent, PriceRange } from './agent';
 import { CommodityType } from '../commodity/commodity-types';
+import { Commodity } from '../commodity/commodity';
+import { Market } from '../market/market';
 
 describe('Agent', () => {
+    let testMarket: Market;
+    let testCommodity: Commodity;
     let agent: Agent;
-    const testCommodityPrice = 42;
+    const testCommodityValue = 42;
     const testCommodityType = CommodityType.TEST;
-    const testPriceRange = new PriceRange(0, testCommodityPrice);
+    const testPriceRange = new PriceRange(0, testCommodityValue);
 
     beforeEach(() => {
-        agent = new Agent();
+        testMarket = new Market();
+        testCommodity = new Commodity(testCommodityType, testCommodityValue);
+        testMarket.addCommodity(testCommodity);
+        testCommodity.makeTrade(10);
+        testCommodity.makeTrade(10);
+
+        agent = new Agent(testMarket);
     });
 
     describe('Price Beliefs', () => {
@@ -57,6 +67,9 @@ describe('Agent', () => {
         });
     });
 
+    it('has a knowledge of the market', () => {
+        expect(agent.market).toBeDefined();
+    });
 
     it('has an upper and lower bound for its price beliefs', () => {
 
@@ -107,6 +120,14 @@ describe('Agent', () => {
 
         it('determines the ideal amount of something to buy', () => {
 
+        });
+    });
+
+    describe('Determine Purchase Quantity', () => {
+        it('can find the historical mean price of a commodity', () => {
+            const expectedHistoricalMeanPrice = 10;
+            const actualHistoricalMeanPrice = agent.getHistoricalMeanPriceOf(testCommodityType);
+            expect(actualHistoricalMeanPrice).toEqual(expectedHistoricalMeanPrice);
         });
     });
 

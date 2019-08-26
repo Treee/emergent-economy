@@ -1,4 +1,5 @@
 import { CommodityType } from "../commodity/commodity-types";
+import { Market } from "../market/market";
 
 export class PriceRange {
     minimum: number;
@@ -27,9 +28,19 @@ export class Bid {
 export class Agent {
 
     priceBeliefs = new Map<CommodityType, PriceRange>();
+    market: Market;
 
-    constructor() {
+    constructor(market: Market) {
+        this.market = market;
         this.priceBeliefs.set(CommodityType.TEST, new PriceRange(0, 42));
+    }
+
+    getHistoricalMeanPriceOf(commodityType: CommodityType): number {
+        const commodity = this.market.getCommodity(commodityType);
+        if (!commodity) {
+            throw new Error('Commodity Does not exist');
+        }
+        return commodity.getHistoricalMean();
     }
 
     getPriceRangeOf(commodityType: CommodityType): PriceRange {

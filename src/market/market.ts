@@ -11,8 +11,12 @@ export class Market {
         this.commodities.set(commodity.type, commodity);
     }
 
-    getCommodity(commodityType: CommodityType): Commodity | null {
-        return this.commodities.get(commodityType) || null;
+    getCommodity(commodityType: CommodityType): Commodity {
+        const commodity = this.commodities.get(commodityType) || null;
+        if (!commodity) {
+            throw new Error('Commodity Does not exist');
+        }
+        return commodity;
     }
 
 }

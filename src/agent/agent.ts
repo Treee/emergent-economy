@@ -28,19 +28,35 @@ export class Bid {
 export class Agent {
 
     priceBeliefs = new Map<CommodityType, PriceRange>();
+    inventory = new Map<CommodityType, number>();
+
     market: Market;
+
+    maxCommodity = 1000;
 
     constructor(market: Market) {
         this.market = market;
         this.priceBeliefs.set(CommodityType.TEST, new PriceRange(0, 42));
     }
 
+    // return Math.min(Math.max(this, min), max);
+
+    determineAmountToBuy(commodityType: CommodityType): number {
+        const currentQuantity = this.inventory.get(commodityType) || 0;
+        const availableInventorySpace = Math.max(this.maxCommodity - currentQuantity, this.maxCommodity);
+        const marketFavorability = this.getMarketFavorabilityOf(commodityType);
+        return Math.round(marketFavorability * availableInventorySpace);
+    }
+
+    getMarketFavorabilityOf(commodityType: CommodityType): number {
+        const commodityPriceRange = this.getPriceRangeOf(commodityType);
+        const currentValue = this.getHistoricalMeanPriceOf(commodityType);
+        const favorability = (currentValue - commodityPriceRange.minimum) / (commodityPriceRange.maximum - commodityPriceRange.minimum);
+        return favorability;
+    }
+
     getHistoricalMeanPriceOf(commodityType: CommodityType): number {
-        const commodity = this.market.getCommodity(commodityType);
-        if (!commodity) {
-            throw new Error('Commodity Does not exist');
-        }
-        return commodity.getHistoricalMean();
+        return this.market.getCommodity(commodityType).getHistoricalMean();
     }
 
     getPriceRangeOf(commodityType: CommodityType): PriceRange {

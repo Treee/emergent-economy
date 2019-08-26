@@ -56,8 +56,10 @@ describe('Agent', () => {
         testCommodity = new Commodity(testCommodityType, testCommodityValue);
         testMarket.addCommodity(testCommodity);
         testCommodity.makeTrade(10);
-        testCommodity.makeTrade(10);
-
+        testCommodity.makeTrade(20);
+        testCommodity.makeTrade(30);
+        testCommodity.makeTrade(40);
+        testCommodity.makeTrade(50);
         agent = new Agent(testMarket);
     });
 
@@ -125,10 +127,26 @@ describe('Agent', () => {
 
     describe('Determine Purchase Quantity', () => {
         it('can find the historical mean price of a commodity', () => {
-            const expectedHistoricalMeanPrice = 10;
+            const expectedHistoricalMeanPrice = 30;
             const actualHistoricalMeanPrice = agent.getHistoricalMeanPriceOf(testCommodityType);
             expect(actualHistoricalMeanPrice).toEqual(expectedHistoricalMeanPrice);
         });
+
+        it('determines favorability of conditions for purchasing', () => {
+            const expectedFavorability = 0.7142857142857143;
+            const actualFavorability = agent.getMarketFavorabilityOf(testCommodityType);
+            expect(actualFavorability).toEqual(expectedFavorability);
+        });
+
+        it('determines the amount of commodity to purchase', () => {
+            const expectedBuyAmount = 714;
+            const actualBuyAmount = agent.determineAmountToBuy(testCommodityType);
+            expect(actualBuyAmount).toEqual(expectedBuyAmount);
+        });
+    });
+
+    describe('Determine Sale Quantity', () => {
+
     });
 
     describe('Create Ask To Sell', () => {

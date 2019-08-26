@@ -39,14 +39,12 @@
 
 
 import { Agent, PriceRange } from './agent';
-import { Commodity } from '../commodity/commodity';
 import { CommodityType } from '../commodity/commodity-types';
 
 describe('Agent', () => {
     let agent: Agent;
     const testCommodityPrice = 42;
     const testCommodityType = CommodityType.TEST;
-    const testCommodity = new Commodity(testCommodityType, testCommodityPrice);
     const testPriceRange = new PriceRange(0, testCommodityPrice);
 
     beforeEach(() => {
@@ -57,7 +55,6 @@ describe('Agent', () => {
         it('has a set of price beliefs for each commodity it can buy or sell', () => {
             expect(agent.getPriceRangeOf(CommodityType.TEST)).toEqual(testPriceRange);
         });
-
     });
 
 
@@ -106,6 +103,10 @@ describe('Agent', () => {
             const actualAskingPrice = agent.getPriceOf(testCommodityType);
             expect(actualAskingPrice).toBeGreaterThan(testPriceRange.minimum - 1);
             expect(actualAskingPrice).toBeLessThan(testPriceRange.maximum + 1);
+        });
+
+        it('determines the ideal amount of something to buy', () => {
+
         });
     });
 

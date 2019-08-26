@@ -1,4 +1,3 @@
-import { Commodity } from "../commodity/commodity";
 import { CommodityType } from "../commodity/commodity-types";
 
 export class PriceRange {
@@ -16,7 +15,13 @@ export class PriceRange {
 }
 
 export class Bid {
+    quantity: number;
+    commodityType: CommodityType;
 
+    constructor(quantity: number, commodityType: CommodityType) {
+        this.quantity = quantity;
+        this.commodityType = commodityType;
+    }
 }
 
 export class Agent {
@@ -32,7 +37,6 @@ export class Agent {
     }
 
     getPriceOf(commodityType: CommodityType) {
-        let range = this.getPriceRangeOf(commodityType);
-        return range.getIdealPrice();
+        return this.getPriceRangeOf(commodityType).getIdealPrice();
     }
 }
